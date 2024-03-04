@@ -1,0 +1,4 @@
+<PodclaveConfig>
+    <RequestDelayBaseSeconds>300</RequestDelayBaseSeconds>
+    <RequestDelayRandomOffsetSeconds>300</RequestDelayRandomOffsetSeconds>
+</PodclaveConfig>
