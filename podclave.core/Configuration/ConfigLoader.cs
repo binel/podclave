@@ -33,7 +33,14 @@ public static class ConfigLoader
             {
 
                 XmlSerializer serializer = new XmlSerializer(typeof(PodclaveConfig));
-                config = (PodclaveConfig)serializer.Deserialize(fs);
+                PodclaveConfig? deserializedConfig = (PodclaveConfig?)serializer.Deserialize(fs);
+                
+                if (deserializedConfig == null)
+                {
+                    Console.WriteLine("Something went wrong while deserializing config.");
+                    return new PodclaveConfig();
+                }
+                config = deserializedConfig;
             }
         }
         catch (InvalidOperationException e)

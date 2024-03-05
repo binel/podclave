@@ -21,9 +21,20 @@ public class PodclaveConfig
     /// </summary>
     [XmlElement("RequestDelayRandomOffsetSeconds")]
     public int RequestDelayRandomOffsetSeconds {get; set;}
+
+    /// <summary>
+    /// The collection of podcasts that are being managed 
+    /// </summary>
+    [XmlArray("Podcasts")]
+    [XmlArrayItem("Podcast")]
+    public List<PodcastConfig> Podcasts { get; set; } = new List<PodcastConfig>();
 }
 
 public class PodcastConfig
 {
-
+    /// <summary>
+    /// URL of the RSS feed 
+    /// </summary>
+    [XmlElement("FeedUrl")]
+    public string? FeedUrl {get; set;}
 }

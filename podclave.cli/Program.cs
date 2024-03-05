@@ -12,6 +12,8 @@ namespace Podclave.Cli
 
             Console.WriteLine($"Config value for base delay: {config.RequestDelayBaseSeconds}");
             Console.WriteLine($"Config value for random delay: {config.RequestDelayRandomOffsetSeconds}");
+            Console.WriteLine($"Number of podcasts: {config.Podcasts.Count}");
+            Console.WriteLine($"First podcast url: {config.Podcasts[0].FeedUrl}");
         }
     }
 }
