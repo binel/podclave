@@ -13,4 +13,14 @@ public class Channel
 {
     [XmlElement("title")]
     public string Title {get; set;}
+
+    [XmlElement("pubDate")]
+    public string _publishedAtShim;
+
+    public DateTime PublishedAt 
+    {
+        get {
+            return DateTime.Parse(_publishedAtShim);
+        }
+    }
 }

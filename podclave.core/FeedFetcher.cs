@@ -9,84 +9,33 @@ namespace Podclave.Core;
 
 public class FeedFetcher
 {
-    public async Task<FeedFetchResult> Fetch(string url)
+    private readonly IDownloader _downloader;
+
+    public FeedFetcher(IDownloader downloader)
     {
-        FeedFetchResult result = new();
-
-        var downloadResult = await DownloadFeed(url);
-
-        if (downloadResult.IsError)
-        {
-            result.IsError = true;
-            return result;
-        }
-        Console.WriteLine(downloadResult.Feed);
-        var feed = ParseFeed(downloadResult.Feed);
-
-
-        return result;
+        _downloader = downloader;
     }
 
-    private FeedParseResult ParseFeed(string feed)
+    public async Task<Feed> Fetch(string url)
     {
-        FeedParseResult result = new();
+        var downloadResult = await _downloader.Download(url);
+        var feed = ParseFeed(downloadResult);
 
+        return feed;
+    }
+
+    private Feed ParseFeed(string feed)
+    {
         XmlSerializer serializer = new XmlSerializer(typeof(StandardPodcastFeed));
         
         using (StringReader sr = new StringReader(feed))
         {
             StandardPodcastFeed? deserializedFeed = (StandardPodcastFeed?)serializer.Deserialize(sr);
-            Console.WriteLine(deserializedFeed.Channel.Title);
-        }           
-
-        return result;
-    }
-
-    private async Task<FeedDownloadResult> DownloadFeed(string url)
-    {
-        FeedDownloadResult result = new();
-
-        using (HttpClient client = new HttpClient())
-        {
-            try 
+            return new Feed
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
-                    result.Feed = responseBody;
-                }
-            }
-            catch (Exception e)
-            {
-                result.IsError = true;
-                Console.WriteLine($"An error occured try to fetch feed from {url}. Error: {e.Message}");
-            }
+                Name = deserializedFeed.Channel.Title,
+                PublishedAt = deserializedFeed.Channel.PublishedAt
+            };
         }
-
-        return result;
     }
-
-    private class FeedDownloadResult 
-    {
-        public bool IsError {get; set;}
-
-        public string Feed {get; set;}
-    }
-
-    private class FeedParseResult
-    {
-        public bool IsError {get; set;}
-
-        public Feed Feed {get; set;}
-    }
-}
-
-public class FeedFetchResult
-{
-    public bool IsError {get; set;}
-
-    public List<Feed> Feed {get; set;}
 }

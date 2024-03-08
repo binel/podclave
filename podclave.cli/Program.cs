@@ -11,7 +11,7 @@ namespace Podclave.Cli
         {
             var config = ConfigLoader.Load();
 
-            var feedFetcher = new FeedFetcher();
+            var feedFetcher = new FeedFetcher(new Downloader());
             var fetchTask = feedFetcher.Fetch(config.Podcasts[0].FeedUrl);
             fetchTask.Wait();
 

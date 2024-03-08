@@ -21,4 +21,8 @@
     <ProjectReference Include="..\podclave.core\podclave.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="SampleFeeds\**" CopyToOutputDirectory="PreserveNewest"/>
+  </ItemGroup>
+
 </Project>

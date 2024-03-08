@@ -5,5 +5,5 @@ public class Feed
 {
     public string Name {get; set;}
 
-    public string PublishedAt {get; set;}
+    public DateTime PublishedAt {get; set;}
 }
