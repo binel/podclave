@@ -23,4 +23,23 @@ public class Channel
             return DateTime.Parse(_publishedAtShim);
         }
     }
+
+    [XmlElement("item")]
+    public List<Item> Items {get; set;} = new List<Item>();
+}
+
+public class Item 
+{
+    [XmlElement("title")]
+    public string Title {get; set;}
+
+    [XmlElement("pubDate")]
+    public string _publishedAtShim;
+
+    public DateTime PublishedAt 
+    {
+        get {
+            return DateTime.Parse(_publishedAtShim);
+        }
+    }
 }

@@ -2,9 +2,9 @@
 
 namespace Podclave.Core.Models;
 
-public class Podcast
+public class Episode
 {
-    public string Name { get; set; }
+    public string Title { get; set; }
 
     public DateTime PublishedAt { get; set; }
     

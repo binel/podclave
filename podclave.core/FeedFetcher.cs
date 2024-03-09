@@ -34,7 +34,12 @@ public class FeedFetcher
             return new Feed
             {
                 Name = deserializedFeed.Channel.Title,
-                PublishedAt = deserializedFeed.Channel.PublishedAt
+                PublishedAt = deserializedFeed.Channel.PublishedAt,
+                Episodes = deserializedFeed.Channel.Items.Select((i) => new Episode
+                {
+                    Title = i.Title,
+                    PublishedAt = i.PublishedAt
+                }).ToList()
             };
         }
     }

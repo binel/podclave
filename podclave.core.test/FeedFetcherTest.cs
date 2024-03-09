@@ -23,5 +23,11 @@ public class FeedFetcherTests
 
         Assert.That(feed.Name, Is.EqualTo("The Adventure Zone"));
         Assert.That(feed.PublishedAt, Is.EqualTo(new DateTime(2024, 03, 07, 06, 0, 0)));
+        Assert.That(feed.Episodes.Count, Is.Not.EqualTo(0));
+        foreach (var ep in feed.Episodes)
+        {
+            Console.WriteLine(ep.Title);
+            Console.WriteLine($"\t{ep.PublishedAt}");
+        }
     }
 }
