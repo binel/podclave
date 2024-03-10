@@ -38,7 +38,8 @@ public class FeedFetcher
                 Episodes = deserializedFeed.Channel.Items.Select((i) => new Episode
                 {
                     Title = i.Title,
-                    PublishedAt = i.PublishedAt
+                    PublishedAt = i.PublishedAt,
+                    MediaLink = i.Enclosure.Url
                 }).ToList()
             };
         }

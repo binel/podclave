@@ -12,9 +12,18 @@ namespace Podclave.Cli
             var config = ConfigLoader.Load();
 
             var feedFetcher = new FeedFetcher(new Downloader());
-            var fetchTask = feedFetcher.Fetch(config.Podcasts[0].FeedUrl);
-            fetchTask.Wait();
 
+
+            foreach(var podcast in config.Podcasts)
+            {
+                var fetchTask = feedFetcher.Fetch(podcast.FeedUrl);
+                fetchTask.Wait();
+
+                if (podcast.DryRun)
+                {
+                    Console.WriteLine("Dry run set");
+                }
+            }
         }
     }
 }

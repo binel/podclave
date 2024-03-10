@@ -42,4 +42,16 @@ public class Item
             return DateTime.Parse(_publishedAtShim);
         }
     }
+
+    [XmlElement("enclosure")]
+    public Enclosure Enclosure {get; set;}
+}
+
+public class Enclosure 
+{
+    [XmlAttribute("url")]
+    public string Url {get; set;}
+
+    [XmlAttribute("types")]
+    public string Type {get; set;}
 }

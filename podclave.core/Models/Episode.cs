@@ -8,4 +8,5 @@ public class Episode
 
     public DateTime PublishedAt { get; set; }
     
+    public string MediaLink {get; set;}
 }

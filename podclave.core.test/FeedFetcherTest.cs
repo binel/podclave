@@ -28,6 +28,7 @@ public class FeedFetcherTests
         {
             Console.WriteLine(ep.Title);
             Console.WriteLine($"\t{ep.PublishedAt}");
+            Console.WriteLine($"\t{ep.MediaLink}");
         }
     }
 }

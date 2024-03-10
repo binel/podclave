@@ -37,4 +37,11 @@ public class PodcastConfig
     /// </summary>
     [XmlElement("FeedUrl")]
     public string? FeedUrl {get; set;}
+
+    /// <summary>
+    /// If set to true, the number of episodes that would be downloaded 
+    /// will be logged, but they will not actually be downloaded. 
+    /// </summary>
+    [XmlElement("DryRun")]
+    public bool DryRun {get; set;}
 }
