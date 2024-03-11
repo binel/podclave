@@ -1,14 +1,27 @@
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace Podclave.Core.Configuration;
 
-public static class ConfigLoader
+public interface IConfigLoader
+{
+    PodclaveConfig Load();
+}
+
+public class ConfigLoader: IConfigLoader
 {
     public const string CONFIG_NAME = "config.xml";
 
-    public static PodclaveConfig Load()
+    private readonly ILogger<ConfigLoader> _logger;
+
+    public ConfigLoader(ILogger<ConfigLoader> logger)
+    {
+        _logger = logger;
+    }
+
+    public PodclaveConfig Load()
     {
         string path = string.Empty;
         // First look in the current directory
@@ -19,11 +32,11 @@ public static class ConfigLoader
         }
         else 
         {
-            Console.WriteLine("Could not find configuration file!");
+            _logger.LogError("Could not find configuration file!");
             return new PodclaveConfig();
         }
 
-        Console.WriteLine($"Found config file at path: {path}");
+        _logger.LogInformation("Found config file at path: {path}", path);
 
         PodclaveConfig config;
         try 
@@ -37,7 +50,7 @@ public static class ConfigLoader
                 
                 if (deserializedConfig == null)
                 {
-                    Console.WriteLine("Something went wrong while deserializing config.");
+                    _logger.LogError("Something went wrong while deserializing config.");
                     return new PodclaveConfig();
                 }
                 config = deserializedConfig;
@@ -45,7 +58,7 @@ public static class ConfigLoader
         }
         catch (InvalidOperationException e)
         {
-            Console.WriteLine($"Config is not well formed. Error: {e.Message}");
+            _logger.LogError($"Config is not well formed. Error: {e.Message}");
             return new PodclaveConfig(); 
         }
 

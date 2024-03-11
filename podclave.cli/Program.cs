@@ -1,29 +1,27 @@
 ﻿using System;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Podclave.Core;
-using Podclave.Core.Configuration;
+using Podclave.Core.Extensions;
 
 namespace Podclave.Cli
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var config = ConfigLoader.Load();
+            HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-            var feedFetcher = new FeedFetcher(new Downloader());
+            builder.AddPodclaveCoreServices();
 
+            builder.Services.AddLogging(builder => builder.AddConsole());
 
-            foreach(var podcast in config.Podcasts)
-            {
-                var fetchTask = feedFetcher.Fetch(podcast.FeedUrl);
-                fetchTask.Wait();
+            builder.Services.AddHostedService<PodclaveService>();
 
-                if (podcast.DryRun)
-                {
-                    Console.WriteLine("Dry run set");
-                }
-            }
+            using IHost host = builder.Build();
+
+            await host.RunAsync();
         }
     }
 }

@@ -4,6 +4,7 @@
     <Podcasts>
         <Podcast>
             <FeedUrl>https://feeds.simplecast.com/cYQVc__c</FeedUrl>
+            <DryRun>true</DryRun>
         </Podcast>
     </Podcasts>
 </PodclaveConfig>

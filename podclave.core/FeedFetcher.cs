@@ -7,7 +7,12 @@ using Podclave.Core.Models;
 using Podclave.Core.Models.Deserialization;
 namespace Podclave.Core;
 
-public class FeedFetcher
+public interface IFeedFetcher
+{
+    Task<Feed> Fetch(string url);
+}
+
+public class FeedFetcher: IFeedFetcher
 {
     private readonly IDownloader _downloader;
 
