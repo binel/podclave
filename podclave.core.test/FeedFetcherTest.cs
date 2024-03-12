@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Logging;
 using Podclave.Core;
+using Podclave.Core.Models;
 using Podclave.Core.Test.Mocks;
 
 namespace podclave.core.test;
@@ -12,8 +14,7 @@ public class FeedFetcherTests
     public void Setup()
     {
         _mockDownloader = new MockDownloader();
-
-        _feedFetcher = new FeedFetcher(_mockDownloader);
+        _feedFetcher = new FeedFetcher(_mockDownloader, new MockLogger<FeedFetcher>());
     }
 
     [Test]
