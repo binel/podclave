@@ -2,7 +2,7 @@ using System;
 using System.Net.Http;
 
 using System.Xml.Serialization;
-
+using Microsoft.Extensions.Logging;
 using Podclave.Core.Models;
 using Podclave.Core.Models.Deserialization;
 namespace Podclave.Core;
@@ -15,16 +15,23 @@ public interface IFeedFetcher
 public class FeedFetcher: IFeedFetcher
 {
     private readonly IDownloader _downloader;
+    private readonly ILogger<FeedFetcher> _logger;
 
-    public FeedFetcher(IDownloader downloader)
+    public FeedFetcher(
+        IDownloader downloader,
+        ILogger<FeedFetcher> logger)
     {
         _downloader = downloader;
+        _logger = logger;
     }
 
     public async Task<Feed> Fetch(string url)
     {
+        _logger.LogInformation("Attempting to download feed at url {url}", url);
         var downloadResult = await _downloader.Download(url);
+        _logger.LogInformation("Successfully downloaded feed. Attempting to parse...");
         var feed = ParseFeed(downloadResult);
+        _logger.LogInformation("Successfully parsed feed for podcast {name}", feed.Name);
 
         return feed;
     }

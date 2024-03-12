@@ -1,4 +1,6 @@
 
+using Microsoft.Extensions.Logging;
+
 namespace Podclave.Core;
 
 public interface IDownloader
@@ -8,6 +10,13 @@ public interface IDownloader
 
 public class Downloader: IDownloader
 {
+    private readonly ILogger<Downloader> _logger;
+
+    public Downloader(ILogger<Downloader> logger)
+    {
+        _logger = logger;
+    }
+
     public async Task<string> Download(string feedUrl)
     {
         using (HttpClient client = new HttpClient())
@@ -25,7 +34,7 @@ public class Downloader: IDownloader
             }
             catch (Exception e)
             {
-                Console.WriteLine($"An error occured try to fetch feed from {feedUrl}. Error: {e.Message}");
+                _logger.LogError($"An error occured try to fetch feed from {feedUrl}. Error: {e.Message}");
                 throw;
             }
         } 

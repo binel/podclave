@@ -1,9 +1,20 @@
 <PodclaveConfig>
     <RequestDelayBaseSeconds>300</RequestDelayBaseSeconds>
     <RequestDelayRandomOffsetSeconds>300</RequestDelayRandomOffsetSeconds>
+    <FeedFetchIntervalHours>3</FeedFetchIntervalHours>
+    <FeedFetchCooldownSeconds>15</FeedFetchCooldownSeconds>
     <Podcasts>
         <Podcast>
+            <Name>The Adventure Zone</Name>
+            <Ignore>false</Ignore>
             <FeedUrl>https://feeds.simplecast.com/cYQVc__c</FeedUrl>
+            <IgnoreEpisodesBefore>2024-03-01</IgnoreEpisodesBefore>
+            <DryRun>true</DryRun>
+        </Podcast>
+        <Podcast>
+            <Name>Pod Save America</Name>
+            <FeedUrl>https://feeds.simplecast.com/dxZsm5kX</FeedUrl>
+            <IgnoreEpisodesBefore>2024-03-01</IgnoreEpisodesBefore>
             <DryRun>true</DryRun>
         </Podcast>
     </Podcasts>

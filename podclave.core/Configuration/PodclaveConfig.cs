@@ -23,6 +23,20 @@ public class PodclaveConfig
     public int RequestDelayRandomOffsetSeconds {get; set;}
 
     /// <summary>
+    /// How many hours before a feed should be re-downloaded to check 
+    /// for new episodes. 
+    /// </summary>
+    [XmlElement("FeedFetchIntervalHours")]
+    public int FeedFetchIntervalHours {get; set;}
+
+    /// <summary>
+    /// Minimum time in seconds between when feeds may be downloaded. This 
+    /// is to be polite to sites that host multiple feeds so we don't DOS them. 
+    /// </summary>
+    [XmlElement("FeedFetchCooldownSeconds")]
+    public int FeedFetchCooldownSeconds {get; set;}
+
+    /// <summary>
     /// The collection of podcasts that are being managed 
     /// </summary>
     [XmlArray("Podcasts")]
@@ -32,6 +46,12 @@ public class PodclaveConfig
 
 public class PodcastConfig
 {
+    /// <summary>
+    /// Name of the feed - only impacts logging statements
+    /// </summary>
+    [XmlElement("Name")]
+    public string Name {get; set;}
+
     /// <summary>
     /// URL of the RSS feed 
     /// </summary>
@@ -44,4 +64,16 @@ public class PodcastConfig
     /// </summary>
     [XmlElement("DryRun")]
     public bool DryRun {get; set;}
+
+    /// <summary>
+    /// If set to true, this podcast will not be downloaded
+    /// </summary>
+    [XmlElement("Ignore")]
+    public bool Ignore {get; set;}
+
+    /// <summary>
+    /// If set, any episodes published before this date will not be downloaded
+    /// </summary>
+    [XmlElement("IgnoreEpisodesBefore")]
+    public DateTime IgnoreEpisodesBefore {get; set;}
 }
