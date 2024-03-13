@@ -9,13 +9,13 @@
             <Ignore>false</Ignore>
             <FeedUrl>https://feeds.simplecast.com/cYQVc__c</FeedUrl>
             <IgnoreEpisodesBefore>2024-03-01</IgnoreEpisodesBefore>
-            <DryRun>true</DryRun>
+            <DryRun>false</DryRun>
         </Podcast>
         <Podcast>
             <Name>Pod Save America</Name>
             <FeedUrl>https://feeds.simplecast.com/dxZsm5kX</FeedUrl>
             <IgnoreEpisodesBefore>2024-03-01</IgnoreEpisodesBefore>
-            <DryRun>true</DryRun>
+            <DryRun>false</DryRun>
         </Podcast>
     </Podcasts>
 </PodclaveConfig>

@@ -11,6 +11,8 @@ public class PodclaveService : BackgroundService
 {
     private readonly IFeedFetcher _feedFetcher;
     private readonly IConfigLoader _configLoader;
+
+    private readonly IEpisodeDownloader _episodeDownloader;
     private readonly ILogger<PodclaveService> _logger;
 
     private List<WorkTask> _tasks = new List<WorkTask>();
@@ -18,10 +20,12 @@ public class PodclaveService : BackgroundService
     public PodclaveService(
         IFeedFetcher feedFetcher,
         IConfigLoader configLoader,
+        IEpisodeDownloader episodeDownloader,
         ILogger<PodclaveService> logger)
     {
         _feedFetcher = feedFetcher;
         _configLoader = configLoader;
+        _episodeDownloader = episodeDownloader;
         _logger = logger;
     }
 
@@ -56,8 +60,7 @@ public class PodclaveService : BackgroundService
 
             if (nextTask == null)
             {
-                _logger.LogInformation("No available work, sleeping for 60 secs");
-                Thread.Sleep(60000);
+                Thread.Sleep(5000);
                 continue;
             }
 
@@ -67,7 +70,23 @@ public class PodclaveService : BackgroundService
             {
                 _logger.LogInformation("Fetching new episodes for {name}", fetchFeedTask.Podcast.Name);
                 var epList = await GetDownloadableEpisodesForFeed(fetchFeedTask.Podcast);
-                _logger.LogInformation("{count} episodes added to download list for {name}", epList.Count, fetchFeedTask.Podcast.Name);
+                
+                foreach (var episode in epList)
+                {
+                    var priorTask = _tasks.Where(t => t is EpisodeDownloadTask)
+                                        .OrderBy(t => t.DoNotWorkBefore)
+                                        .FirstOrDefault();
+
+                    var epDownloadTask = new EpisodeDownloadTask
+                    {
+                        Episode = episode,
+                        DoNotWorkBefore = priorTask != null ? priorTask.DoNotWorkBefore.AddSeconds(config.RequestDelayBaseSeconds) : DateTime.UtcNow
+                    };
+                    _logger.LogInformation("Created task to download episode {title} not before {time}", epDownloadTask.Episode.Title, epDownloadTask.DoNotWorkBefore);
+                    _tasks.Add(epDownloadTask);
+                }
+                
+                _logger.LogInformation("{count} episode download tasks added for {name}", epList.Count, fetchFeedTask.Podcast.Name);
                 var fetchTask = new FetchFeedTask
                 {
                     Podcast = fetchFeedTask.Podcast,
@@ -75,6 +94,10 @@ public class PodclaveService : BackgroundService
                 };
                 _logger.LogInformation("Created task to fetch feed {name} not before {time}", fetchFeedTask.Podcast.Name, fetchTask.DoNotWorkBefore);
                 _tasks.Add(fetchTask);                
+            }
+            if (nextTask is EpisodeDownloadTask episodeDownloadTask)
+            {
+                await _episodeDownloader.Download(episodeDownloadTask.Episode);
             }
         }
     }

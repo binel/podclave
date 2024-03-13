@@ -14,11 +14,11 @@ public interface IFeedFetcher
 
 public class FeedFetcher: IFeedFetcher
 {
-    private readonly IDownloader _downloader;
+    private readonly IFeedDownloader _downloader;
     private readonly ILogger<FeedFetcher> _logger;
 
     public FeedFetcher(
-        IDownloader downloader,
+        IFeedDownloader downloader,
         ILogger<FeedFetcher> logger)
     {
         _downloader = downloader;

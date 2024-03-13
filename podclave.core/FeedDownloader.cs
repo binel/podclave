@@ -3,16 +3,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Podclave.Core;
 
-public interface IDownloader
+public interface IFeedDownloader
 {
     Task<string> Download(string feedUrl);
 }
 
-public class Downloader: IDownloader
+public class FeedDownloader: IFeedDownloader
 {
-    private readonly ILogger<Downloader> _logger;
+    private readonly ILogger<FeedDownloader> _logger;
 
-    public Downloader(ILogger<Downloader> logger)
+    public FeedDownloader(ILogger<FeedDownloader> logger)
     {
         _logger = logger;
     }

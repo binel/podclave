@@ -2,7 +2,7 @@ using Podclave.Core;
 
 namespace Podclave.Core.Test.Mocks;
 
-public class MockDownloader : IDownloader
+public class MockFeedDownloader : IFeedDownloader
 {
     public Task<string> Download(string feedUrl)
     {

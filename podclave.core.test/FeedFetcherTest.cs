@@ -8,12 +8,12 @@ namespace podclave.core.test;
 public class FeedFetcherTests
 {
     private FeedFetcher _feedFetcher;
-    private MockDownloader _mockDownloader;
+    private MockFeedDownloader _mockDownloader;
 
     [SetUp]
     public void Setup()
     {
-        _mockDownloader = new MockDownloader();
+        _mockDownloader = new MockFeedDownloader();
         _feedFetcher = new FeedFetcher(_mockDownloader, new MockLogger<FeedFetcher>());
     }
 
