@@ -1,7 +1,7 @@
 
 using Podclave.Core.Models;
 
-namespace Podclave.Cli;
+namespace Podclave.Cli.Tasks;
 
 public class EpisodeDownloadTask : WorkTask
 {

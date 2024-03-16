@@ -1,8 +1,6 @@
-
-using System.Reflection.Metadata.Ecma335;
 using Podclave.Core.Configuration;
 
-namespace Podclave.Cli;
+namespace Podclave.Cli.Tasks;
 
 public class FetchFeedTask: WorkTask
 {

@@ -16,6 +16,8 @@ public class ConfigLoader: IConfigLoader
 
     private readonly ILogger<ConfigLoader> _logger;
 
+    private PodclaveConfig? _config;
+
     public ConfigLoader(ILogger<ConfigLoader> logger)
     {
         _logger = logger;
@@ -23,6 +25,11 @@ public class ConfigLoader: IConfigLoader
 
     public PodclaveConfig Load()
     {
+        if (_config != null)
+        {
+            return _config;
+        }
+
         string path = string.Empty;
         // First look in the current directory
         if (File.Exists(CONFIG_NAME))
@@ -62,6 +69,7 @@ public class ConfigLoader: IConfigLoader
             return new PodclaveConfig(); 
         }
 
+        _config = config;
         return config;
     }
 }

@@ -1,7 +1,6 @@
 
-using System.Reflection.Metadata.Ecma335;
 
-namespace Podclave.Cli;
+namespace Podclave.Cli.Tasks;
 
 public class WorkTask 
 {
