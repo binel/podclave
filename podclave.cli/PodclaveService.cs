@@ -11,48 +11,33 @@ namespace Podclave.Cli;
 
 public class PodclaveService : BackgroundService
 {
-    private readonly IConfigLoader _configLoader;
-
-    private readonly IEpisodeDownloader _episodeDownloader;
-
     private readonly ITaskRespository _taskRespository;
 
     private readonly FetchFeedHandler _fetchFeedHandler;
 
+    private readonly InitializationHandler _initializationHandler;
+
+    private readonly EpisodeDownloadHandler _episodeDownloadHandler;
+
     private readonly ILogger<PodclaveService> _logger;
 
     public PodclaveService(
-        IConfigLoader configLoader,
-        IEpisodeDownloader episodeDownloader,
         ITaskRespository taskRespository,
         FetchFeedHandler fetchFeedHandler,
+        InitializationHandler initializationHandler,
+        EpisodeDownloadHandler episodeDownloadHandler,
         ILogger<PodclaveService> logger)
     {
-        _configLoader = configLoader;
-        _episodeDownloader = episodeDownloader;
         _taskRespository = taskRespository;
         _fetchFeedHandler = fetchFeedHandler;
+        _initializationHandler = initializationHandler;
+        _episodeDownloadHandler = episodeDownloadHandler;
         _logger = logger;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var config = _configLoader.Load();
-
-        _logger.LogInformation("Start up. Creating work tasks to fetch all configured feeds.");
-
-        foreach(var podcast in config.Podcasts)
-        {
-            var priorTask = _taskRespository.GetLastTask<FetchFeedTask>();
-
-            var fetchTask = new FetchFeedTask
-            {
-                Podcast = podcast,
-                DoNotWorkBefore = priorTask != null ? priorTask.DoNotWorkBefore.AddSeconds(config.FeedFetchCooldownSeconds) : DateTime.UtcNow,
-            };
-            _logger.LogInformation("Created task to fetch feed {name} not before {time}", podcast.Name, fetchTask.DoNotWorkBefore);
-            _taskRespository.AddTask(fetchTask);
-        }
+        _taskRespository.AddTask(new InitializationTask());
 
         _logger.LogInformation("Starting work loop...");
 
@@ -67,13 +52,18 @@ public class PodclaveService : BackgroundService
                 continue;
             }
 
-            if (nextTask is FetchFeedTask fetchFeedTask)
+            if (nextTask is InitializationTask)
+            {
+                await _initializationHandler.Handle(nextTask);
+            }
+            else if (nextTask is FetchFeedTask)
             {
                 await _fetchFeedHandler.Handle(nextTask);
             }
-            if (nextTask is EpisodeDownloadTask episodeDownloadTask)
+            else if (nextTask is EpisodeDownloadTask)
             {
-                await _episodeDownloader.Download(episodeDownloadTask.Episode);
+                await _episodeDownloadHandler.Handle(nextTask);
+                
             }
         }
     }

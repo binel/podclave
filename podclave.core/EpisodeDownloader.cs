@@ -24,6 +24,8 @@ public class EpisodeDownloader : IEpisodeDownloader
     public async Task<Episode> Download(Episode episode)
     {
         _logger.LogInformation("Attempting to download episode {name}", episode.Title);
+
+        
         return episode;
     }
 }

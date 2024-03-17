@@ -23,7 +23,9 @@ namespace Podclave.Cli
 
             builder.Services.AddSingleton<ITaskRespository, TaskRespository>();
             builder.Services.AddSingleton<FetchFeedHandler>();
-
+            builder.Services.AddSingleton<InitializationHandler>();
+            builder.Services.AddSingleton<EpisodeDownloadHandler>();
+            
             using IHost host = builder.Build();
 
             await host.RunAsync();
