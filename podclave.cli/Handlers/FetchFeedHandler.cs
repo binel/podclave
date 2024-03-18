@@ -83,6 +83,8 @@ public class FetchFeedHandler : IHandler
             {
                 continue;
             }
+
+            ep.FeedName = podcast.Name;
             
             downloadListForFeed.Add(ep);
         }

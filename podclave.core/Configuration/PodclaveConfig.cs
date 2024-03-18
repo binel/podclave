@@ -7,6 +7,13 @@ namespace Podclave.Core.Configuration;
 public class PodclaveConfig
 {
     /// <summary>
+    /// The root directory where podclave should store podcasts and other 
+    /// configuration files. 
+    /// </summary>
+    [XmlElement("BaseDirectory")]
+    public string BaseDirectory {get; set;}
+
+    /// <summary>
     /// The minimum amount of time between requests in seconds. The 
     /// actual delay between requests is influenced by
     /// RequestDelayRandomOffsetSeconds, which adds in a random delay. 
@@ -51,6 +58,13 @@ public class PodcastConfig
     /// </summary>
     [XmlElement("Name")]
     public string Name {get; set;}
+
+    /// <summary>
+    /// What the name of the directory that stores this podcast should be. 
+    /// This will be a directory within the Podclave base directory
+    /// </summary>
+    [XmlElement("DirectoryName")]
+    public string DirectoryName {get; set;}
 
     /// <summary>
     /// URL of the RSS feed 
