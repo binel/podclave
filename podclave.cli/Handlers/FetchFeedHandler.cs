@@ -34,7 +34,7 @@ public class FetchFeedHandler : IHandler
 
         _logger.LogInformation("Fetching new episodes for {name}", fetchFeedTask.Podcast.Name);
         var epList = await GetDownloadableEpisodesForFeed(fetchFeedTask.Podcast);
-        
+        int addedEpCount = 0;
         foreach (var episode in epList)
         {
             var priorTask = _taskRepository.GetLastTask<EpisodeDownloadTask>();
@@ -48,6 +48,18 @@ public class FetchFeedHandler : IHandler
                 _logger.LogInformation("Prior task has download time of {time}", priorTask.DoNotWorkBefore);
             }
 
+            string filename = episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
+            var podcastConfig = config.Podcasts
+                .Where(p => p.Name == fetchFeedTask.Podcast.Name)
+                .FirstOrDefault();
+            var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}/{filename}";
+
+            if (File.Exists(path))
+            {
+                _logger.LogInformation($"{podcastConfig.DirectoryName}/{filename} already downloaded.");
+                continue;
+            }
+
             var epDownloadTask = new EpisodeDownloadTask
             {
                 Episode = episode,
@@ -55,9 +67,10 @@ public class FetchFeedHandler : IHandler
             };
             _logger.LogInformation("Created task to download episode {title} not before {time}", epDownloadTask.Episode.Title, epDownloadTask.DoNotWorkBefore);
             _taskRepository.AddTask(epDownloadTask);
+            addedEpCount++;
         }
         
-        _logger.LogInformation("{count} episode download tasks added for {name}", epList.Count, fetchFeedTask.Podcast.Name);
+        _logger.LogInformation("{count} episode download tasks added for {name}", addedEpCount, fetchFeedTask.Podcast.Name);
         var fetchTask = new FetchFeedTask
         {
             Podcast = fetchFeedTask.Podcast,

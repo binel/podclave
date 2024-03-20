@@ -47,7 +47,6 @@ public class PodclaveService : BackgroundService
 
             if (nextTask == null)
             {
-                _logger.LogInformation("no task, sleeping");
                 Thread.Sleep(5000);
                 continue;
             }
