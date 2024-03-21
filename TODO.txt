@@ -1,0 +1,14 @@
+Bugs 
+- Fix whatever is causing the RSS feed for Dames and Dragons to now deserializes
+- If an error is encountered downloading a feed, don't crash the whole program
+
+Small Features 
+- Implement better error reporting when an RSS feed can't be deserialized 
+- Shuffle the "Do not download before" times of all episodes after completing 
+    a feed fetch task, to download a few episodes of each podcast rather than all 
+    of one podcast before moving on 
+- Implement the randomized time offset between episode downloads
+- Accept a config file as a command line parameter 
+
+Big Features 
+- Auto-update 
