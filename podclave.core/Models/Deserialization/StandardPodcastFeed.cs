@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using Podclave.Core.Exceptions;
 
 namespace Podclave.Core.Models.Deserialization;
 
@@ -20,7 +21,19 @@ public class Channel
     public DateTime PublishedAt 
     {
         get {
-            return DateTime.Parse(_publishedAtShim);
+            if (string.IsNullOrEmpty(_publishedAtShim))
+            {
+                // TODO maybe do something else to indicate it didn't have a pubDate. Some 
+                // feeds seem to not include this
+                return DateTime.MinValue;
+            }
+
+            if (DateTime.TryParse(_publishedAtShim, out DateTime result))
+            {
+                return result;
+            }
+
+            throw new FeedParseException($"Unable to parse pubDate of {_publishedAtShim}");
         }
     }
 
