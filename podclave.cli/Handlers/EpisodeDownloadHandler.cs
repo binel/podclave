@@ -62,7 +62,7 @@ public class EpisodeDownloadHandler : IHandler
             }
         }
 
-        string filename = episodeDownloadTask.Episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
+        string filename = "E_" + episodeDownloadTask.Episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
 
         using (FileStream fs = new FileStream($"{path}/{filename}", FileMode.Create))
         {

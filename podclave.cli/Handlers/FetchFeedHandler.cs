@@ -48,7 +48,7 @@ public class FetchFeedHandler : IHandler
                 _logger.LogInformation("Prior task has download time of {time}", priorTask.DoNotWorkBefore);
             }
 
-            string filename = episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
+            string filename = "E_" + episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
             var podcastConfig = config.Podcasts
                 .Where(p => p.Name == fetchFeedTask.Podcast.Name)
                 .FirstOrDefault();
