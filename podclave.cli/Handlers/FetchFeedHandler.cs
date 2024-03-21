@@ -39,15 +39,6 @@ public class FetchFeedHandler : IHandler
         {
             var priorTask = _taskRepository.GetLastTask<EpisodeDownloadTask>();
 
-            if (priorTask == null)
-            {
-                _logger.LogInformation("Prior task was null, so next ep download task will happen immediately");
-            }
-            else 
-            {
-                _logger.LogInformation("Prior task has download time of {time}", priorTask.DoNotWorkBefore);
-            }
-
             string filename = "E_" + episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
             var podcastConfig = config.Podcasts
                 .Where(p => p.Name == fetchFeedTask.Podcast.Name)
@@ -56,7 +47,6 @@ public class FetchFeedHandler : IHandler
 
             if (File.Exists(path))
             {
-                _logger.LogInformation($"{podcastConfig.DirectoryName}/{filename} already downloaded.");
                 continue;
             }
 
