@@ -4,6 +4,7 @@ using Podclave.Cli.Tasks;
 using Podclave.Core;
 using Podclave.Core.Models;
 using Podclave.Core.Configuration;
+using Podclave.Core.Exceptions;
 
 namespace Podclave.Cli.Handlers;
 
@@ -69,6 +70,7 @@ public class FetchFeedHandler : IHandler
         _logger.LogInformation("Created task to fetch feed {name} not before {time}", fetchFeedTask.Podcast.Name, fetchTask.DoNotWorkBefore);
         _taskRepository.AddTask(fetchTask);
     }
+
     private async Task<List<Episode>> GetDownloadableEpisodesForFeed(PodcastConfig podcast)
     {
         var downloadListForFeed = new List<Episode>();        
@@ -77,8 +79,15 @@ public class FetchFeedHandler : IHandler
             _logger.LogInformation("{name} is set to ignore. Skipping...", podcast.Name);
             return downloadListForFeed;
         }
-
-        var feed = await _feedFetcher.Fetch(podcast.FeedUrl);
+        Feed? feed;
+        try {
+            feed = await _feedFetcher.Fetch(podcast.FeedUrl);
+        }
+        catch (FeedParseException ex)
+        {
+            _logger.LogWarning($"Unable to parse feed for {podcast.Name}! Skipping. Error: {ex.Message}");
+            return downloadListForFeed;
+        }
 
         foreach (var ep in feed.Episodes)
         {

@@ -41,11 +41,17 @@ public class EpisodeDownloadHandler : IHandler
             Directory.CreateDirectory(path);
         }
 
+        string filename = "E_" + episodeDownloadTask.Episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
+
+        _logger.LogInformation("Attempting to download episode {epName} ({filename}) for {name}.",
+            episodeDownloadTask.Episode.Title,
+            filename,
+            podcastConfig.Name);
+
         byte[]? responseData = null;
         using (HttpClient client = new HttpClient())
         {
             var link = episodeDownloadTask.Episode.MediaLink;
-            _logger.LogInformation("Attempting to download episode for {name} at {link}", podcastConfig.Name, link);
             try 
             {
                 HttpResponseMessage response = await client.GetAsync(link);
@@ -60,9 +66,10 @@ public class EpisodeDownloadHandler : IHandler
                 _logger.LogError($"An error occured try to download episode from {link}. Error: {e.Message}");
                 throw;
             }
+
         }
 
-        string filename = "E_" + episodeDownloadTask.Episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
+        _logger.LogInformation("Download successful.");
 
         using (FileStream fs = new FileStream($"{path}/{filename}", FileMode.Create))
         {

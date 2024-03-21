@@ -3,6 +3,7 @@ using System.Net.Http;
 
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
+using Podclave.Core.Exceptions;
 using Podclave.Core.Models;
 using Podclave.Core.Models.Deserialization;
 namespace Podclave.Core;
@@ -42,7 +43,15 @@ public class FeedFetcher: IFeedFetcher
         
         using (StringReader sr = new StringReader(feed))
         {
-            StandardPodcastFeed? deserializedFeed = (StandardPodcastFeed?)serializer.Deserialize(sr);
+            StandardPodcastFeed? deserializedFeed;
+            try {
+                deserializedFeed = (StandardPodcastFeed?)serializer.Deserialize(sr);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new FeedParseException("Unable to parse feed as StandardPodcastFeed", ex);
+            }
+            
             return new Feed
             {
                 Name = deserializedFeed.Channel.Title,
@@ -51,7 +60,7 @@ public class FeedFetcher: IFeedFetcher
                 {
                     Title = i.Title,
                     PublishedAt = i.PublishedAt,
-                    MediaLink = i.Enclosure.Url
+                    MediaLink = i.Enclosure.Url,
                 }).ToList()
             };
         }
