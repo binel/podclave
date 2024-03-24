@@ -41,11 +41,9 @@ public class EpisodeDownloadHandler : IHandler
             Directory.CreateDirectory(path);
         }
 
-        string filename = "E_" + episodeDownloadTask.Episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
-
         _logger.LogInformation("Attempting to download episode {epName} ({filename}) for {name}.",
             episodeDownloadTask.Episode.Title,
-            filename,
+            episodeDownloadTask.Episode.Filename,
             podcastConfig.Name);
 
         byte[]? responseData = null;
@@ -71,7 +69,7 @@ public class EpisodeDownloadHandler : IHandler
 
         _logger.LogInformation("Download successful.");
 
-        using (FileStream fs = new FileStream($"{path}/{filename}", FileMode.Create))
+        using (FileStream fs = new FileStream($"{path}/{episodeDownloadTask.Episode.Filename}", FileMode.Create))
         {
             BinaryWriter bw = new BinaryWriter(fs);
             bw.Write(responseData);

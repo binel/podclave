@@ -39,8 +39,6 @@ public class FetchFeedHandler : IHandler
         foreach (var episode in epList)
         {
             var priorTask = _taskRepository.GetLastTask<EpisodeDownloadTask>();
-
-            string filename = "E_" + episode.PublishedAt.ToString("yyyy_MM_dd") + ".mp3";
             var podcastConfig = config.Podcasts
                 .Where(p => p.Name == fetchFeedTask.Podcast.Name)
                 .FirstOrDefault();
@@ -54,9 +52,8 @@ public class FetchFeedHandler : IHandler
                 continue;
             }
 
-
             // Check that the episode isn't already downloaded 
-            var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}/{filename}";
+            var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}/{episode.Filename}";
             if (File.Exists(path))
             {
                 continue;
