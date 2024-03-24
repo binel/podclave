@@ -7,6 +7,8 @@ public interface ITaskRespository
 {
     public void AddTask(WorkTask t);
 
+    public List<WorkTask> GetAllTasks();
+
     public T GetLastTask<T>() where T : WorkTask;
 
     public WorkTask PopNextTask();
@@ -21,6 +23,11 @@ public class TaskRespository: ITaskRespository
     public TaskRespository(ILogger<TaskRespository> logger)
     {
         _logger = logger;
+    }
+
+    public List<WorkTask> GetAllTasks()
+    {
+        return _tasks;
     }
 
     public void AddTask(WorkTask t)

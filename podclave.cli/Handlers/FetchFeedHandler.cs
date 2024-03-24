@@ -44,8 +44,19 @@ public class FetchFeedHandler : IHandler
             var podcastConfig = config.Podcasts
                 .Where(p => p.Name == fetchFeedTask.Podcast.Name)
                 .FirstOrDefault();
-            var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}/{filename}";
 
+            // Check that we don't already have a task queued to download this episode 
+            var tasks = _taskRepository.GetAllTasks();
+            var found = tasks.Where(t => t is EpisodeDownloadTask 
+                && ((EpisodeDownloadTask)t).Episode.PublishedAt == episode.PublishedAt).Any();
+            if (found)
+            {
+                continue;
+            }
+
+
+            // Check that the episode isn't already downloaded 
+            var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}/{filename}";
             if (File.Exists(path))
             {
                 continue;
