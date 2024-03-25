@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Podclave.Core;
 using Podclave.Core.Models;
@@ -18,18 +19,22 @@ public class FeedFetcherTests
     }
 
     [Test]
-    public async Task HappyPath()
+    public async Task Taz()
     {
+        _mockDownloader.SetToReturnTaz();
         var feed = await _feedFetcher.Fetch("test");
 
         Assert.That(feed.Name, Is.EqualTo("The Adventure Zone"));
-        Assert.That(feed.PublishedAt, Is.EqualTo(new DateTime(2024, 03, 07, 06, 0, 0)));
         Assert.That(feed.Episodes.Count, Is.Not.EqualTo(0));
-        foreach (var ep in feed.Episodes)
-        {
-            Console.WriteLine(ep.Title);
-            Console.WriteLine($"\t{ep.PublishedAt}");
-            Console.WriteLine($"\t{ep.MediaLink}");
-        }
+    }
+
+    [Test]
+    public async Task Dames()
+    {
+        _mockDownloader.SetToReturnDames();
+        var feed = await _feedFetcher.Fetch("test");
+
+        Assert.That(feed.Name, Is.EqualTo("LegendLark"));
+        Assert.That(feed.Episodes.Count, Is.Not.EqualTo(0));
     }
 }

@@ -39,6 +39,9 @@ public class FeedFetcher: IFeedFetcher
 
     private Feed ParseFeed(string feed)
     {
+        // Deserializer doesn't like whitespace at the start 
+        feed = feed.TrimStart();
+        
         XmlSerializer serializer = new XmlSerializer(typeof(StandardPodcastFeed));
         
         using (StringReader sr = new StringReader(feed))
