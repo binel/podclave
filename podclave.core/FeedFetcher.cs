@@ -87,17 +87,48 @@ public class FeedFetcher: IFeedFetcher
                 throw new FeedParseException("Unable to parse feed - no items found");
             }
 
-            return new Feed
+            Feed f = new Feed
             {
                 Name = channel.Title,
                 PublishedAt = channel.PublishedAt,
-                Episodes = channel.Items.Select((i) => new Episode
-                {
-                    Title = i.Title,
-                    PublishedAt = i.PublishedAt,
-                    MediaLink = i.Enclosure.Url,
-                }).ToList()
+                Episodes = new List<Episode>()
             };
+
+            foreach (var item in channel.Items)
+            {
+                if (item.PublishedAt == DateTime.MinValue)
+                {
+                    _logger.LogWarning("Item did not have valid published at!");
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(item.Title))
+                {
+                    _logger.LogWarning("Item published at {time} did not have title!", item.PublishedAt);
+                    continue;
+                }
+
+                if (item.Enclosure == null)
+                {
+                    _logger.LogWarning("Item {title} did not have enclosure!", item.Title);
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(item.Enclosure.Url))
+                {
+                    _logger.LogWarning("Item {title} had enclosure but did not have url!", item.Title);
+                    continue;
+                }
+
+                f.Episodes.Add(new Episode
+                {
+                    Title = item.Title,
+                    PublishedAt = item.PublishedAt,
+                    MediaLink = item.Enclosure.Url
+                });
+            }
+
+            return f;
         }
     }
 }
