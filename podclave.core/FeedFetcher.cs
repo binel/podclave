@@ -1,6 +1,6 @@
 using System;
 using System.Net.Http;
-
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
 using Podclave.Core.Exceptions;
@@ -55,11 +55,43 @@ public class FeedFetcher: IFeedFetcher
                 throw new FeedParseException("Unable to parse feed as StandardPodcastFeed", ex);
             }
             
+            if (deserializedFeed == null)
+            {
+                throw new FeedParseException("Unable to parse feed - deserialized feed was null");
+            }
+
+            Channel channel = new Channel();
+            if (deserializedFeed.Channel == null)
+            {
+                throw new FeedParseException("Unable to parse feed - Could not determine channel");
+            }
+            else
+            {
+                channel = deserializedFeed.Channel;
+            }
+
+
+
+            if (string.IsNullOrEmpty(channel.Title))
+            {
+                throw new FeedParseException("Unable to parse feed - channel title was not valid");
+            }
+
+            if (channel.PublishedAt == DateTime.MinValue)
+            {
+                _logger.LogWarning("Feed {title} does not have a valid published at value", channel.Title);
+            }
+
+            if (channel.Items.Count == 0)
+            {
+                throw new FeedParseException("Unable to parse feed - no items found");
+            }
+
             return new Feed
             {
-                Name = deserializedFeed.Channel.Title,
-                PublishedAt = deserializedFeed.Channel.PublishedAt,
-                Episodes = deserializedFeed.Channel.Items.Select((i) => new Episode
+                Name = channel.Title,
+                PublishedAt = channel.PublishedAt,
+                Episodes = channel.Items.Select((i) => new Episode
                 {
                     Title = i.Title,
                     PublishedAt = i.PublishedAt,
