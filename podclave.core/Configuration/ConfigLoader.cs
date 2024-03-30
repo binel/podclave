@@ -7,12 +7,14 @@ namespace Podclave.Core.Configuration;
 
 public interface IConfigLoader
 {
-    PodclaveConfig Load();
+    PodclaveConfig? Load();
 }
 
 public class ConfigLoader: IConfigLoader
 {
     public const string CONFIG_NAME = "config.xml";
+
+    public const string CONFIG_LOCATION_VAR_NAME = "PODCLAVE_CONFIG_PATH";
 
     private readonly ILogger<ConfigLoader> _logger;
 
@@ -23,7 +25,7 @@ public class ConfigLoader: IConfigLoader
         _logger = logger;
     }
 
-    public PodclaveConfig Load()
+    public PodclaveConfig? Load()
     {
         if (_config != null)
         {
@@ -31,16 +33,28 @@ public class ConfigLoader: IConfigLoader
         }
 
         string path = string.Empty;
-        // First look in the current directory
-        if (File.Exists(CONFIG_NAME))
+        var env_path = Environment.GetEnvironmentVariable(CONFIG_LOCATION_VAR_NAME);
+        if (!string.IsNullOrEmpty(env_path))
         {
-            // TODO log something
+            if (!File.Exists(env_path))
+            {
+                _logger.LogWarning($"Config file not found at env path {env_path}!");
+            }
+            else 
+            {
+                path = env_path;
+            }
+        }
+        // First look in the current directory
+        else if (File.Exists(CONFIG_NAME))
+        {
+            _logger.LogInformation("Using configuration file from current directory.");
             path = CONFIG_NAME;
         }
         else 
         {
-            _logger.LogError("Could not find configuration file!");
-            return new PodclaveConfig();
+            _logger.LogError("Could not find configuration file! Cannot continue!");
+            return null;
         }
 
         _logger.LogInformation("Found config file at path: {path}", path);
@@ -58,7 +72,7 @@ public class ConfigLoader: IConfigLoader
                 if (deserializedConfig == null)
                 {
                     _logger.LogError("Something went wrong while deserializing config.");
-                    return new PodclaveConfig();
+                    return null;
                 }
                 config = deserializedConfig;
             }
@@ -66,7 +80,7 @@ public class ConfigLoader: IConfigLoader
         catch (InvalidOperationException e)
         {
             _logger.LogError($"Config is not well formed. Error: {e.Message}");
-            return new PodclaveConfig(); 
+            return null;
         }
 
         _config = config;

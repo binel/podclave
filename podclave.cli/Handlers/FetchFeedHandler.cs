@@ -5,6 +5,7 @@ using Podclave.Core;
 using Podclave.Core.Models;
 using Podclave.Core.Configuration;
 using Podclave.Core.Exceptions;
+using System.Runtime.CompilerServices;
 
 namespace Podclave.Cli.Handlers;
 
@@ -59,10 +60,18 @@ public class FetchFeedHandler : IHandler
                 continue;
             }
 
+            var downloadTime = DateTime.UtcNow;
+            if (priorTask != null)
+            {
+                downloadTime = priorTask.DoNotWorkBefore.AddSeconds(config.RequestDelayBaseSeconds);
+                var randomDelay = new Random().NextInt64() % config.RequestDelayRandomOffsetSeconds;
+                downloadTime = downloadTime.AddSeconds(randomDelay);
+            }
+
             var epDownloadTask = new EpisodeDownloadTask
             {
                 Episode = episode,
-                DoNotWorkBefore = priorTask != null ? priorTask.DoNotWorkBefore.AddSeconds(config.RequestDelayBaseSeconds) : DateTime.UtcNow
+                DoNotWorkBefore = downloadTime
             };
             _logger.LogInformation("Created task to download episode {title} not before {time}", epDownloadTask.Episode.Title, epDownloadTask.DoNotWorkBefore);
             _taskRepository.AddTask(epDownloadTask);

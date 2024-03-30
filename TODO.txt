@@ -5,8 +5,6 @@ Small Features
 - Shuffle the "Do not download before" times of all episodes after completing 
     a feed fetch task, to download a few episodes of each podcast rather than all 
     of one podcast before moving on 
-- Implement the randomized time offset between episode downloads
-- Accept a config file as a command line parameter
 - Create a reporting task that runs once an hour to report the status of tasks 
 
 Big Features 

@@ -65,8 +65,7 @@ public class PodclaveService : BackgroundService
                 
             }
         }
+        _logger.LogInformation("Shutting down...");
     }
-
-
 }
 

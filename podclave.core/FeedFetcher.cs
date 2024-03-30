@@ -28,11 +28,11 @@ public class FeedFetcher: IFeedFetcher
 
     public async Task<Feed> Fetch(string url)
     {
-        _logger.LogInformation("Attempting to download feed at url {url}", url);
+        _logger.LogDebug("Attempting to download feed at url {url}", url);
         var downloadResult = await _downloader.Download(url);
-        _logger.LogInformation("Successfully downloaded feed. Attempting to parse...");
+        _logger.LogDebug("Successfully downloaded feed. Attempting to parse...");
         var feed = ParseFeed(downloadResult);
-        _logger.LogInformation("Successfully parsed feed for podcast {name}", feed.Name);
+        _logger.LogDebug("Successfully parsed feed for podcast {name}", feed.Name);
 
         return feed;
     }
