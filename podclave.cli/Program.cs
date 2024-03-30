@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Podclave.Cli.Handlers;
 using Podclave.Cli.Tasks;
 using Podclave.Core;
@@ -17,7 +18,12 @@ namespace Podclave.Cli
 
             builder.AddPodclaveCoreServices();
 
-            builder.Services.AddLogging(builder => builder.AddConsole());
+            builder.Services.AddLogging(builder => 
+                builder.AddSimpleConsole(o => {
+                    o.SingleLine = true;
+                    o.TimestampFormat = "dd/MM/yy hh:mm:ss ";
+                })
+            );
 
             builder.Services.AddHostedService<PodclaveService>();
 
@@ -25,7 +31,7 @@ namespace Podclave.Cli
             builder.Services.AddSingleton<FetchFeedHandler>();
             builder.Services.AddSingleton<InitializationHandler>();
             builder.Services.AddSingleton<EpisodeDownloadHandler>();
-            
+
             using IHost host = builder.Build();
 
             await host.RunAsync();
