@@ -9,9 +9,9 @@ public interface ITaskRespository
 
     public List<WorkTask> GetAllTasks();
 
-    public T GetLastTask<T>() where T : WorkTask;
+    public T? GetLastTask<T>() where T : WorkTask;
 
-    public WorkTask PopNextTask();
+    public WorkTask? PopNextTask();
 }
 
 public class TaskRespository: ITaskRespository
@@ -35,16 +35,20 @@ public class TaskRespository: ITaskRespository
         _tasks.Add(t);
     }
 
-    public T GetLastTask<T>() where T : WorkTask
+    public T? GetLastTask<T>() where T : WorkTask
     {
         var task =  _tasks.Where(t => t is T)
                           .OrderByDescending(t => t.DoNotWorkBefore)
                           .FirstOrDefault();    
 
+        if (task == null)
+        {
+            return null;
+        }
         return (T)task;    
     }
 
-    public WorkTask PopNextTask()
+    public WorkTask? PopNextTask()
     {
         var nextTask = _tasks.Where(t => t.DoNotWorkBefore < DateTime.UtcNow)
                                  .OrderBy(t => t.DoNotWorkBefore)

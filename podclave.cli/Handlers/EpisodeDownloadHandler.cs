@@ -1,10 +1,6 @@
-
-using System.IO.Enumeration;
 using Microsoft.Extensions.Logging;
 using Podclave.Cli.Tasks;
-using Podclave.Core;
 using Podclave.Core.Configuration;
-using Podclave.Core.Models;
 
 namespace Podclave.Cli.Handlers;
 
@@ -25,11 +21,32 @@ public class EpisodeDownloadHandler : IHandler
     public async Task Handle(WorkTask t)
     {
         var episodeDownloadTask = t as EpisodeDownloadTask;
+        if (episodeDownloadTask == null)
+        {
+            _logger.LogError("Attempted to handle non-valid task type. Aborting");
+            return;
+        }
 
-        var config = _configLoader.Load();
+        PodclaveConfig? config = _configLoader.Load();
+        if (config == null)
+        {
+            _logger.LogError("Config could not be found. Aborting task to download {name} from feed {feed}.",
+                 episodeDownloadTask.Episode.Title,
+                 episodeDownloadTask.Episode.FeedName);
+            return;
+        }
+
         var podcastConfig = config.Podcasts
             .Where(p => p.Name == episodeDownloadTask.Episode.FeedName)
             .FirstOrDefault();
+
+        if (podcastConfig == null)
+        {
+            _logger.LogError("Could not find a podcast config that matches episode to download. Aborting task to download {name} from feed {feed}",
+                 episodeDownloadTask.Episode.Title,
+                 episodeDownloadTask.Episode.FeedName);
+            return;
+        }
 
         var path = $"{config.BaseDirectory}/{podcastConfig.DirectoryName}";
 
@@ -65,6 +82,12 @@ public class EpisodeDownloadHandler : IHandler
                 throw;
             }
 
+        }
+        
+        if (responseData == null)
+        {
+            _logger.LogError("Error in downloading epsidoe. Cannot save. Aborting.");
+            return;
         }
 
         _logger.LogInformation("Download successful.");

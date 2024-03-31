@@ -23,7 +23,12 @@ public class InitializationHandler : IHandler
 
     public Task Handle(WorkTask t)
     {
-        var config = _configLoader.Load();
+        PodclaveConfig? config = _configLoader.Load();
+        if (config == null)
+        {
+            _logger.LogError("Config could not be found. Aborting initalization.");
+            return Task.CompletedTask;
+        }
 
         foreach(var podcast in config.Podcasts)
         {

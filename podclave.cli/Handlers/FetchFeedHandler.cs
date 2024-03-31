@@ -31,8 +31,20 @@ public class FetchFeedHandler : IHandler
 
     public async Task Handle(WorkTask t)
     {
-        var config = _configLoader.Load();
         var fetchFeedTask = t as FetchFeedTask;
+        if (fetchFeedTask == null)
+        {
+            _logger.LogError("Attempted to handle non-valid task type. Aborting");
+            return;
+        }        
+
+        PodclaveConfig? config = _configLoader.Load();
+        if (config == null)
+        {
+            _logger.LogError("Config could not be found. Aborting task to fetch feed {name}",
+                 fetchFeedTask.Podcast.Name);
+            return;
+        }
 
         _logger.LogInformation("Fetching new episodes for {name}", fetchFeedTask.Podcast.Name);
         var epList = await GetDownloadableEpisodesForFeed(fetchFeedTask.Podcast);
@@ -43,6 +55,13 @@ public class FetchFeedHandler : IHandler
             var podcastConfig = config.Podcasts
                 .Where(p => p.Name == fetchFeedTask.Podcast.Name)
                 .FirstOrDefault();
+
+            if (podcastConfig == null)
+            {
+                _logger.LogError("Could not find a podcast config that matches episode to download. Aborting task to fetch feed {feed}",
+                    fetchFeedTask.Podcast.Name);
+                return;
+            }
 
             // Check that we don't already have a task queued to download this episode 
             var tasks = _taskRepository.GetAllTasks();
@@ -96,6 +115,13 @@ public class FetchFeedHandler : IHandler
             _logger.LogInformation("{name} is set to ignore. Skipping...", podcast.Name);
             return downloadListForFeed;
         }
+
+        if (podcast.FeedUrl == null)
+        {
+            _logger.LogWarning("No feed url set for feed {name}! Aborting.", podcast.Name);
+            return downloadListForFeed;
+        }
+
         Feed? feed;
         try {
             feed = await _feedFetcher.Fetch(podcast.FeedUrl);
