@@ -6,6 +6,7 @@ Small Features
     a feed fetch task, to download a few episodes of each podcast rather than all 
     of one podcast before moving on 
 - Create a reporting task that runs once an hour to report the status of tasks 
+- Learn how conditional get requests work 
 
 Big Features 
 - Auto-update 
