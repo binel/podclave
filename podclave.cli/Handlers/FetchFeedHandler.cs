@@ -131,6 +131,11 @@ public class FetchFeedHandler : IHandler
             _logger.LogWarning($"Unable to parse feed for {podcast.Name}! Skipping. Error: {ex.Message}");
             return downloadListForFeed;
         }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Encountered other issue getting feed for {podcast.Name}. Skipping. Error: {e.Message}");
+            return downloadListForFeed;
+        }
 
         foreach (var ep in feed.Episodes)
         {
