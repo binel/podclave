@@ -1,5 +1,5 @@
 
-namespace Podclave.Cli.Tasks;
+namespace Podclave.Core.Tasks;
 
 public class InitializationTask : WorkTask
 {

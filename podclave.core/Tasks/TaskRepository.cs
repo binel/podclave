@@ -1,7 +1,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Podclave.Cli.Tasks;
+namespace Podclave.Core.Tasks;
 
 public interface ITaskRespository
 {

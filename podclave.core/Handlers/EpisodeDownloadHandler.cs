@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
-using Podclave.Cli.Tasks;
+using Podclave.Core.Tasks;
 using Podclave.Core.Configuration;
 
-namespace Podclave.Cli.Handlers;
+namespace Podclave.Core.Handlers;
 
 public class EpisodeDownloadHandler : IHandler
 {

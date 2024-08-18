@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Podclave.Cli.Handlers;
-using Podclave.Cli.Tasks;
+using Podclave.Core.Handlers;
+using Podclave.Core.Tasks;
 using Podclave.Core;
 using Podclave.Core.Extensions;
 

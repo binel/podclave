@@ -1,13 +1,13 @@
 
 using Microsoft.Extensions.Logging;
-using Podclave.Cli.Tasks;
+using Podclave.Core.Tasks;
 using Podclave.Core;
 using Podclave.Core.Models;
 using Podclave.Core.Configuration;
 using Podclave.Core.Exceptions;
 using System.Runtime.CompilerServices;
 
-namespace Podclave.Cli.Handlers;
+namespace Podclave.Core.Handlers;
 
 public class FetchFeedHandler : IHandler
 {

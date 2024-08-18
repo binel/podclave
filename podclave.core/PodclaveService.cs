@@ -4,10 +4,10 @@ using Microsoft.Extensions.Logging;
 using Podclave.Core;
 using Podclave.Core.Configuration;
 using Podclave.Core.Models;
-using Podclave.Cli.Tasks;
-using Podclave.Cli.Handlers;
+using Podclave.Core.Tasks;
+using Podclave.Core.Handlers;
 
-namespace Podclave.Cli;
+namespace Podclave.Core;
 
 public class PodclaveService : BackgroundService
 {
